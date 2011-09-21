@@ -461,7 +461,9 @@ public class Whiteboard extends JFrame implements ActionListener{
 			 canvas.newCanvas();
 		 else if(e.getActionCommand().equalsIgnoreCase("Exit"))
 			 canvas.exit();
-			 
+		 revalidate();	 
+		 repaint();
+		 
 
 	}
 	

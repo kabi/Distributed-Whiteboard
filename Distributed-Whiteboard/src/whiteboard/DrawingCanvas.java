@@ -186,8 +186,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
             gc.fillRect(0, 0, w, h); // fill in background
         }
         g2.drawImage(_bufImage, null, 0, 0);  // draw previous shapes
-        
         drawCurrentShape(g2);
+        repaint();
     }//end paintComponent
     
     
@@ -290,7 +290,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
                      break;
                      
         }
-        
+        repaint();
         
         
     }//end paintComponent
@@ -299,7 +299,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     
     //===================================================== mousePressed
     public void mousePressed(MouseEvent e) {
-        _currentStartX = e.getX(); // save x coordinate of the click
+    	resetVariables(e);
+    	_currentStartX = e.getX(); // save x coordinate of the click
         _currentStartY = e.getY(); // save y
         _currentEndX   = _currentStartX;   // set end to same pixel
         _currentEndY   = _currentStartY;
@@ -409,15 +410,17 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        		System.err.println("Something fucked up royally.");
 	        }
 	        //Add the object to the list.
+	      //--- Draw the current shape onto the buffered image.
+	        Graphics2D grafarea = _bufImage.createGraphics();
+	        drawCurrentShape(grafarea);
+	        resetVariables(e);
+	        this.repaint();
         }catch(Exception e1)
         {
         	e1.printStackTrace();
         }
         
-        //--- Draw the current shape onto the buffered image.
-        Graphics2D grafarea = _bufImage.createGraphics();
-        drawCurrentShape(grafarea);
-        this.repaint();
+        
     }//end mouseReleased
     
     
@@ -506,7 +509,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	
 	        else 
 	        {
-	            JOptionPane.showMessageDialog(null, "Only (*.jpg) and (*.png) files allowed.", "Error saving file", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(this, "Only (*.jpg) and (*.png) files allowed.", "Error saving file", JOptionPane.ERROR_MESSAGE);
 	            fileName = null;
 	            _changesMade = true;
 	        }
@@ -522,7 +525,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 		//current canvas and prompts for saving if so.
 		if(_changesMade)
 		{
-			int confirm = JOptionPane.showConfirmDialog(null, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
+			int confirm = JOptionPane.showConfirmDialog(this, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
 			if(confirm == JOptionPane.CANCEL_OPTION);
 			else if (confirm == JOptionPane.YES_OPTION)
 			{
@@ -531,9 +534,11 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 				else
 				{
 					_bufImage = null;
-					paintComponent(this.getGraphics());
-					revalidate();
-					_changesMade = false;
+					//paintComponent(this.getGraphics());
+					
+					Graphics g = this.getGraphics();
+				    g.setColor(Color.white);
+				    g.fillRect(0,0,this.getBounds().width,this.getBounds().height);
 				}
 			}
 			else
@@ -541,8 +546,6 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 				//_bufImage = (BufferedImage)this.createImage(this.getWidth(), this.getHeight());
 				_bufImage = null;
 				paintComponent(this.getGraphics());
-				revalidate();
-				_changesMade = false;
 			}
 			
 		}else
@@ -550,10 +553,10 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 			//_bufImage = (BufferedImage)this.createImage(this.getWidth(), this.getHeight());
 			_bufImage = null;
 			paintComponent(this.getGraphics());
-			revalidate();
-			_changesMade = false;
+			
 		}
-		
+		repaint();
+		_changesMade = false;
 		
 	}//end newCanvas()
 	
@@ -564,7 +567,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 		//Checks for any pending changes to be saved
 		if(_changesMade)
 		{
-			int confirm = JOptionPane.showConfirmDialog(null, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
+			int confirm = JOptionPane.showConfirmDialog(this, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
 			if(confirm == JOptionPane.CANCEL_OPTION);
 			else if (confirm == JOptionPane.YES_OPTION)
 			{
@@ -590,7 +593,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 		//---Provided to enable users to open image files
 		if(_changesMade)
 		{
-			int confirm = JOptionPane.showConfirmDialog(null, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
+			int confirm = JOptionPane.showConfirmDialog(this, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
 			if(confirm == JOptionPane.CANCEL_OPTION);
 			else if (confirm == JOptionPane.YES_OPTION)
 			{
@@ -684,4 +687,16 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	 }//end checkZeroSizeObject
 
 
+	
+	void resetVariables(MouseEvent e)
+	{
+		_currentStartX = e.getX();
+		_currentStartY = e.getY();
+		_currentEndX = e.getX();
+		_currentEndY = e.getY();
+		_posWidth = 0;
+		_posHeight = 0;    //values to check the start and end
+		_posX = e.getX();		//co-ordinates always result in a positive value object
+		_posY = e.getY();
+	}
 }
