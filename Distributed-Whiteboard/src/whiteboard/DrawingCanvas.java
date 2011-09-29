@@ -135,42 +135,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     }//end setShape
     
     
-    //==========================================setMode
-  	public void setMode(boolean fill) {
-  		//----Alternate between filled shapes and empty modes
-  		_filledMode  = fill;
-  		
-  	}//end setMode
-
-  	
-  	
-  	//==========================================setColor
-  	public void setColor(Color newColor) {
-  		//--- Provided so that users can select the color for the pen
-  		_penColor  = newColor;
-  		
-  	}//end setColor
-      
-  	
-  	
-    
-    //=========================================================setPen
-    public void setPen(float pWidth, int pCap, int pJoin) {
-        //--- Provided so users can set the style of pen, specifically the width
-        _pen = new BasicStroke(pWidth, pCap, pJoin);
-        
-    }//end setPen
-    
-    
-    
-  //=========================================================getPen
-    public BasicStroke getPen() {
-        //--- Provided so we can access the style of pen currently set
-        return _pen;
-        
-    }//end setPen
-    
-    
+   
     
     //=================================================== paintComponent
     public void paintComponent(Graphics g) {
@@ -310,11 +275,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         //because the object needs to be updated while the mouse is being
         //dragged.
         if(this._shape == 0 || this._shape==7){
-        	//TODO Eric -- alter these variables so that vector is 
-        	//instantiated with a pair of doubles, between 0 and 1.
-        	//(0.0,0.0) should be the bottom left corner of the whiteboard.
-        	//(1.0,1.0) should be the top right corner of the whiteboard.
-        	//Just write a small conversion function. It shouldn't be hard.
+        	//TODO Nothing. I'll adjust the Vector class so you 
+        	// can just use the mouse coordinates to spawn vectors
         	
         	
         	//TODO: (Eric) Transfer conversion helper functions to new class

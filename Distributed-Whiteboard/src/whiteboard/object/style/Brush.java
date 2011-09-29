@@ -1,5 +1,7 @@
 package whiteboard.object.style;
 
+//TODO THIS IS SHIT!
+
 public class Brush {
 	public final int thickness;
 	public final double blur;

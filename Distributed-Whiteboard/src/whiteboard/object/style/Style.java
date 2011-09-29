@@ -2,6 +2,8 @@ package whiteboard.object.style;
 
 import java.io.Serializable;
 
+//TODO Rewrite
+
 public abstract class Style 
 	implements Serializable {
 	/**

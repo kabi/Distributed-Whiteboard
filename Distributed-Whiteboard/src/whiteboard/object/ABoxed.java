@@ -69,6 +69,15 @@ public abstract class ABoxed extends AWhiteboardObject
 		}
 	}
 	
+	//TOM: TODO:
+	/*
+	 * (non-Javadoc)
+	 * @see whiteboard.object.IBoxed#rotate(double)
+	 * 
+	 * public int width()
+	 * public int height()
+	 */
+	
 
 	@Override
 	public void rotate(double angle) {

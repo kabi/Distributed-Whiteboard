@@ -1,5 +1,7 @@
 package whiteboard.object.style;
 
+//TODO: THIS IS SHIT
+
 public class StyleLine 
 	extends Style {
 	

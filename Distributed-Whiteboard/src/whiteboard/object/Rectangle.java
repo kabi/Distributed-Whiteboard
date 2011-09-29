@@ -19,7 +19,7 @@ public class Rectangle extends ABoxed
 		this.rel_bottomleft = Vector.subtract(rect.bottomLeft(), rect.getPosition());
 		this.rel_bottomright = Vector.subtract(rect.bottomRight(), rect.getPosition());
 	}
-	
+	//TODO Rename to match coordinate system
 	public Vector bottomLeft() {
 		return Vector.add(this.rel_bottomleft, this.pos);
 	}

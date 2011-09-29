@@ -1,7 +1,7 @@
 package whiteboard.object.style;
 
 
-
+//TODO THIS IS SHIT
 
 public class StyleBox extends Style {
 	
@@ -34,5 +34,13 @@ public class StyleBox extends Style {
 		this.filled = filled;
 		this.fillcolour = fillcolour;
 	}
+	
+	//TODO Possibly?!?
+	 //==========================================setMode
+  	public void setMode(boolean fill) {
+  		//----Alternate between filled shapes and empty modes
+  		_filledMode  = fill;
+  		
+  	}//end setMode
 
 }

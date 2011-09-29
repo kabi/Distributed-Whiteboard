@@ -1,7 +1,10 @@
 package whiteboard;
 
+
+//TODO Unified coordinate system
 /**
  * Transform screen coordinates
+ *
  * @author Eric
  *
  */

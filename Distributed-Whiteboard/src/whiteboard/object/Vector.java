@@ -8,6 +8,7 @@ public class Vector implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6904823546426403044L;
+	//TODO int between 0 and 600
 	private final double x;
 	private final double y;
 	
