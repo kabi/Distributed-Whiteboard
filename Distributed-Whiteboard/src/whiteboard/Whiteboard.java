@@ -6,8 +6,7 @@ package whiteboard;
 *
 *GUI development by WindowBuilderPro (Eclipse)
 *
-*NB: Much easier to use WindowBuilder plugin for Eclipse 
-*if need to edit the UI for this class
+*
 */
 
 import java.awt.BasicStroke;
@@ -51,7 +50,8 @@ public class Whiteboard extends JFrame implements ActionListener{
      * TODO: 
 	 * 
 	 * Distributed Whiteboard GUI class. 
-	 * 
+	 * NB: Much easier to use WindowBuilder plugin for Eclipse 
+	 *if need to edit the UI for this class
 	 */
 	
 	
