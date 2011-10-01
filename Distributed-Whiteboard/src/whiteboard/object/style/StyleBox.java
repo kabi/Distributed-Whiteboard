@@ -11,6 +11,7 @@ public class StyleBox extends Style {
 	private static final long serialVersionUID = 541598083276416222L;
 	private boolean filled;
 	private int fillcolour = 0;
+	private boolean _filledMode = false;
 	
 	public StyleBox(Brush b) {
 		super(b);
@@ -36,10 +37,17 @@ public class StyleBox extends Style {
 	}
 	
 	//TODO Possibly?!?
+	
+	public boolean getMode() {
+  		//----Alternate between filled shapes and empty modes
+  		return _filledMode;
+  		
+  	}//end setMode
+	
 	 //==========================================setMode
   	public void setMode(boolean fill) {
   		//----Alternate between filled shapes and empty modes
-  		_filledMode  = fill;
+  		_filledMode   = fill;
   		
   	}//end setMode
 

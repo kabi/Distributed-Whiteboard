@@ -20,6 +20,8 @@ import javax.swing.JOptionPane;
  */
 public class File {
 //TODO PUT SHIT IN HERE
+
+	private boolean _filledMode;
 	
 	//=============================================================open
 		public void open()

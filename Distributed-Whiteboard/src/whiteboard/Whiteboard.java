@@ -42,6 +42,9 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.BevelBorder;
 
+import whiteboard.object.style.Pen;
+import whiteboard.object.style.StyleBox;
+
 
 //Pre-formatted UI with WindowBuilderPro for Eclipse
 public class Whiteboard extends JFrame implements ActionListener{
@@ -73,6 +76,9 @@ public class Whiteboard extends JFrame implements ActionListener{
 	private JPanel pnlColorChooser;
 	private Color _bgColor = Color.WHITE;
 	private int _penWidth = 5;
+	private Pen pen = new Pen();
+	private StyleBox stylebox;
+	private File fileMenu;
 	public static JTextField txtInput;
 	public static boolean changesMade = false;
 
@@ -305,7 +311,7 @@ public class Whiteboard extends JFrame implements ActionListener{
         	  public void itemStateChanged(ItemEvent ie){
         	  _penWidth  = Integer.parseInt(cboPenSize.getSelectedItem().toString());
  			 
- 			 canvas.setPen(_penWidth, canvas.getPen().getEndCap(), canvas.getPen().getLineJoin());
+ 			 pen.setPen(_penWidth, pen.getPen().getEndCap(), pen.getPen().getLineJoin());
  			 revalidate();
         	  }
         	  });
@@ -395,50 +401,50 @@ public class Whiteboard extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		 if(e.getActionCommand().equalsIgnoreCase("Freedraw"))
 			 {canvas.setShape(0);
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Line"))
 			 {canvas.setShape(1);	 
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Rectangle"))
 			 {canvas.setShape(2);
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Square"))
 			 {canvas.setShape(3);
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Oval"))
 			 {canvas.setShape(4);
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Circle"))
 			 {canvas.setShape(5);	
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Text"))
 			 {canvas.setShape(6);
-			 canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
+			 pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);}
 		 else if(e.getActionCommand().equalsIgnoreCase("Erase"))
 		 	{canvas.setShape(7);
-			canvas.setPen(canvas.getPen().getLineWidth(), BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);}
+		 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);}
 		else if(e.getActionCommand().equalsIgnoreCase("Fill"))
 		 	{JToggleButton btn = (JToggleButton)e.getSource();
-			 canvas.setMode(btn.isSelected());}
+			 stylebox.setMode(btn.isSelected());}
 		 else if(e.getActionCommand().equalsIgnoreCase("PenColor"))
 		 {
 			 System.out.println(e.getActionCommand().toString());
 			 Color prevColor = lblColor.getBackground();
 			 Color newColor = JColorChooser.showDialog(this,"Choose Background Color", prevColor);
-			 canvas.setColor(newColor);
+			 pen.set_penColor(newColor);
 			 lblColor.setBackground(newColor);
 			 revalidate();
 		 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Open"))
-			 canvas.open();
+			 fileMenu.open();
 		 else if(e.getActionCommand().equalsIgnoreCase("Save"))
-			 canvas.save();
+			 fileMenu.save();
 		 else if(e.getActionCommand().equalsIgnoreCase("SaveAs"))
-			 canvas.saveAs();
+			 fileMenu.saveAs();
 		 else if(e.getActionCommand().equalsIgnoreCase("New"))
-			 canvas.newCanvas();
+			 fileMenu.newCanvas();
 		 else if(e.getActionCommand().equalsIgnoreCase("Exit"))
-			 canvas.exit();
+			 fileMenu.exit();
 		 revalidate();	 
 		 repaint();
 		 
