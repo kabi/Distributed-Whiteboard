@@ -26,9 +26,9 @@ public class FileMenu {
 	
 	
 	
-	public FileMenu(DrawingCanvas canvas2) {
+	public FileMenu(DrawingCanvas canvas) {
 		// TODO Auto-generated constructor stub
-		this.canvas = canvas2;
+		this.canvas = canvas;
 	}
 
 		//=============================================================open
@@ -135,7 +135,7 @@ public class FileMenu {
 			        else if (suffix.toLowerCase().equals("jpg")) {
 			            WritableRaster raster = canvas._bufImage.getRaster();
 			            WritableRaster newRaster;
-			            newRaster = raster.createWritableChild(0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, new int[] {0, 1, 2});
+			            newRaster = raster.createWritableChild(0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, null);
 			            DirectColorModel cm = (DirectColorModel) canvas._bufImage.getColorModel();
 			            DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
 			                                                          cm.getRedMask(),
@@ -222,4 +222,9 @@ public class FileMenu {
 				
 				
 			}//end exit()
+
+			public void setCanvas(DrawingCanvas canvas) {
+				// TODO Auto-generated method stub
+				this.canvas = canvas;
+			}
 }

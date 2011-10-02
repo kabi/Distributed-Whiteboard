@@ -2,9 +2,6 @@ package whiteboard.object.style;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.JTextField;
 
 public class Pen {
 	

@@ -12,6 +12,9 @@ public abstract class Style
 	private static final long serialVersionUID = -2812094884404957606L;
 	protected Brush brush;
 	
+	//Eric: Added this constructor
+	public Style() {}
+	
 	public Style(Brush b) {
 		this.brush = b;
 	}

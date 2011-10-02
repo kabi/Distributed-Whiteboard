@@ -12,27 +12,18 @@ package whiteboard;
  */
 
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.DirectColorModel;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -45,6 +36,7 @@ import whiteboard.object.Line;
 import whiteboard.object.Rectangle;
 import whiteboard.object.Square;
 import whiteboard.object.Vector;
+import whiteboard.object.style.Pen;
 
 class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener {
     
@@ -93,13 +85,11 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     
     //--- BufferedImage to store the underlying saved painting.
     //    Will be initialized first time paintComponent is called.
-    private BufferedImage _bufImage = null;
-	private BasicStroke _pen;
+    BufferedImage _bufImage = null;
+	private Pen _pen;
 	private JTextField txtInput;
 	private boolean _filledMode;
-	private Color _penColor;
-	private String fileName;
-	private boolean _changesMade = false;
+	boolean _changesMade = false;
 	private int _posWidth = 0;
 	private int _posHeight = 0;    //values to check the start and end
 	private int _posX = 0;		//co-ordinates always result in a positive value object
@@ -117,9 +107,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     public DrawingCanvas() {
         setPreferredSize(new Dimension(SIZE, SIZE));
         setBackground(Color.white);
+        _pen = new Pen();
         txtInput = new JTextField();
-        _pen = new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        _penColor = Color.BLACK;
         _filledMode = false;
         //--- Add the mouse listeners.
         this.addMouseListener(this); 
@@ -165,8 +154,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         //    on the context passed to paintComponent, or the
         //    context for the BufferedImage.
     	
-    	g2.setColor(_penColor);
-        g2.setStroke(_pen);
+    	g2.setColor(_pen.get_penColor());
+        g2.setStroke(_pen.getPen());
         checkZeroSizeObject();
         switch (_shape) {
         
@@ -247,7 +236,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
                     g2.setColor(this.getBackground());
                     g2.drawLine(p1.x, p1.y, p2.x, p2.y);
                 }
-            		g2.setColor(_penColor);
+            		g2.setColor(_pen.get_penColor());
             		_changesMade = true; //flag changes made to canvas
                      break;   
             default:  // should never happen
@@ -466,4 +455,21 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 		_posX = e.getX();		//co-ordinates always result in a positive value object
 		_posY = e.getY();
 	}
+
+
+
+	public void setPen(Pen pen) {
+		// TODO Auto-generated method stub
+		this._pen = pen;
+	}
+
+
+
+	public void setMode(boolean mode) {
+		// TODO Auto-generated method stub
+		this._filledMode = mode;
+	}
+	
+	
+	
 }

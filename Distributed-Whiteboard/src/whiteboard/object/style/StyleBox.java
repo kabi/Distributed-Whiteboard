@@ -13,6 +13,7 @@ public class StyleBox extends Style {
 	private int fillcolour = 0;
 	private boolean _filledMode = false;
 	
+	
 	public StyleBox(Brush b) {
 		super(b);
 		this.filled = false;
@@ -21,6 +22,10 @@ public class StyleBox extends Style {
 		super(b);
 		this.filled = filled;
 		this.fillcolour = fillcolour;
+	}
+	
+	public StyleBox() {
+		super();
 	}
 	
 	public boolean isFilled() {
