@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * File System operations
@@ -22,21 +23,30 @@ public class FileMenu {
 //TODO PUT SHIT IN HERE
 
 	DrawingCanvas canvas;
-	private String fileName;
+	private String fileName = new String();
+	private JFileChooser fileChooser = new JFileChooser();
 	
 	
 	
 	public FileMenu(DrawingCanvas canvas) {
 		// TODO Auto-generated constructor stub
 		this.canvas = canvas;
+		fileChooser .resetChoosableFileFilters();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image (*.jpg)", "jpg", "jpeg"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image (*.png)", "png"));
+        //fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Image (*.gif)", "gif"));
+        
+        
 	}
 
 		//=============================================================open
 		public void open()
 		{
 			//TODO: Scale the opened images to fit on canvas
-			//T
 			//---Provided to enable users to open image files
+			
+			
 			if(canvas._changesMade)
 			{
 				int confirm = JOptionPane.showConfirmDialog(canvas, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -47,19 +57,19 @@ public class FileMenu {
 					if(canvas._changesMade);
 					else
 					{
-						canvas._bufImage = null;
+						canvas.setBufImage(null);
 						openFile();
 						canvas.repaint();
-						canvas._changesMade = false;
+						canvas.setChangesMade(false);
 					}
 				}
 				else
 				{
 					//_bufImage = (BufferedImage)this.createImage(this.getWidth(), this.getHeight());
-					canvas._bufImage = null;
+					canvas.setBufImage(null);
 					openFile();
 					canvas.repaint();
-					canvas._changesMade = false;
+					canvas.setChangesMade(false);
 				}
 				
 			}else openFile();
@@ -68,16 +78,16 @@ public class FileMenu {
 			//======================================================openFile
 			public void openFile(){
 				
-				final JFileChooser sFile = new JFileChooser();
-				int of = sFile.showOpenDialog(canvas);
+				//final JFileChooser sFile = new JFileChooser();
+				int of = fileChooser.showOpenDialog(canvas);
 				//---Helper method for opening files
 				try 
 				{
 						if (of == JFileChooser.APPROVE_OPTION) {
 							try 
 							{
-								Image img = ImageIO.read(sFile.getSelectedFile());
-								canvas._bufImage = (BufferedImage)img;
+								Image img = ImageIO.read(fileChooser.getSelectedFile());
+								canvas.setBufImage((BufferedImage)img);
 								canvas.paintComponents(canvas.getGraphics());
 								canvas.repaint();
 							} catch (final Exception e) {
@@ -108,12 +118,13 @@ public class FileMenu {
 				 if(canvas._changesMade)
 				 if(fileName == null || fileName.isEmpty())
 				 {
-					 final JFileChooser sFile = new JFileChooser();
+					 //final JFileChooser sFile = new JFileChooser();
 				 
-					 int response = sFile.showSaveDialog(canvas);
+					 int response = fileChooser.showSaveDialog(canvas);
 					 if(response == JFileChooser.APPROVE_OPTION)
 					 {
-						 fileName = sFile.getSelectedFile().getAbsolutePath();
+						 fileName = fileChooser.getSelectedFile().getAbsolutePath();
+						 //checkFileExtension(fileName);
 					 }
 				 }
 			        File file = new File(fileName);
@@ -144,14 +155,31 @@ public class FileMenu {
 			            BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false,  null);
 			            try { ImageIO.write(rgbBuffer, suffix, file); }
 			            catch (IOException e) { e.printStackTrace(); }
-			            canvas._changesMade = false;
+			            canvas.setChangesMade(false);
 			        }
 			
 			        else 
 			        {
-			            JOptionPane.showMessageDialog(canvas, "Only (*.jpg) and (*.png) files allowed.", "Error saving file", JOptionPane.ERROR_MESSAGE);
-			            fileName = null;
-			            canvas._changesMade = true;
+			        	WritableRaster raster = canvas._bufImage.getRaster();
+			            WritableRaster newRaster;
+			            newRaster = raster.createWritableChild(0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, null);
+			            DirectColorModel cm = (DirectColorModel) canvas._bufImage.getColorModel();
+			            DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
+			                                                          cm.getRedMask(),
+			                                                          cm.getGreenMask(),
+			                                                          cm.getBlueMask());
+			            BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false,  null);
+			            try 
+			            { 
+			            	file = new File(fileName.concat(".jpg"));
+			            	ImageIO.write(rgbBuffer, "jpg", file);
+			            	
+			            	
+			            }
+			            catch (IOException e) { e.printStackTrace(); }
+			            //JOptionPane.showMessageDialog(canvas, "Only (*.jpg) and (*.png) files allowed.", "Error saving file", JOptionPane.ERROR_MESSAGE);
+			            //fileName = null;
+			            canvas.setChangesMade(false);
 			        }
 				 
 		    }//end save
@@ -173,8 +201,7 @@ public class FileMenu {
 						if(canvas._changesMade);
 						else
 						{
-							canvas._bufImage = null;
-							//paintComponent(this.getGraphics());
+							canvas.setBufImage(null);
 							
 							Graphics g = canvas.getGraphics();
 						    g.setColor(Color.white);
@@ -183,22 +210,21 @@ public class FileMenu {
 					}
 					else
 					{
-						//_bufImage = (BufferedImage)this.createImage(this.getWidth(), this.getHeight());
-						canvas._bufImage = null;
+						canvas.setBufImage(null);
 						canvas.paintComponent(canvas.getGraphics());
 					}
 					
 				}else
 				{
-					//_bufImage = (BufferedImage)this.createImage(this.getWidth(), this.getHeight());
-					canvas._bufImage = null;
+					canvas.setBufImage(null);
 					canvas.paintComponent(canvas.getGraphics());
 					
 				}
 				canvas.repaint();
-				canvas._changesMade = false;
+				canvas.setChangesMade(false);
 				
 			}//end newCanvas()
+			
 			
 			//================================================================exit
 			public void exit() {

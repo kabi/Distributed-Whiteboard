@@ -12,7 +12,6 @@ package whiteboard;
  */
 
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -24,9 +23,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 
 import whiteboard.object.AWhiteboardObject;
 import whiteboard.object.Circle;
@@ -35,6 +33,7 @@ import whiteboard.object.FreeLine;
 import whiteboard.object.Line;
 import whiteboard.object.Rectangle;
 import whiteboard.object.Square;
+import whiteboard.object.TextBox;
 import whiteboard.object.Vector;
 import whiteboard.object.style.Pen;
 
@@ -87,14 +86,14 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     //    Will be initialized first time paintComponent is called.
     BufferedImage _bufImage = null;
 	private Pen _pen;
-	private JTextField txtInput;
 	private boolean _filledMode;
 	boolean _changesMade = false;
 	private int _posWidth = 0;
 	private int _posHeight = 0;    //values to check the start and end
 	private int _posX = 0;		//co-ordinates always result in a positive value object
 	private int _posY = 0;
-	private static String _userText;
+	private TextDialog textDialog;
+	private JFrame parentFrame;
 	
 	
     
@@ -108,11 +107,11 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         setPreferredSize(new Dimension(SIZE, SIZE));
         setBackground(Color.white);
         _pen = new Pen();
-        txtInput = new JTextField();
         _filledMode = false;
         //--- Add the mouse listeners.
         this.addMouseListener(this); 
         this.addMouseMotionListener(this);
+        objects = new ArrayList<AWhiteboardObject>();
     }//endconstructor
     
     
@@ -222,11 +221,18 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
                      break;
                      
             case TEXTBOX:
-            	
-            	//TODO: (Eric) Preformatted text 
-                    g2.drawString(_userText, _currentStartX, _currentStartY);
+            	try
+            	{
+            		g2.setFont(textDialog.getSelectedFont());
+                    g2.drawString(textDialog.text, _currentStartX, _currentStartY);
+                    textDialog.setText("");
                    
                     _changesMade = true; //flag changes made to canvas
+            	}
+            	catch(Exception e)
+            	{
+            		//e.printStackTrace();
+            	}
                 break;
             case ERASE:
             	for (int i = 0; i < points.size() - 2; i++)
@@ -320,7 +326,6 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        		TransformCoords.userY(_currentStartY, this.getWidth()), true);
 	        Vector endvec = new Vector(TransformCoords.userX(_currentEndX, this.getWidth()), 
 	        		TransformCoords.userY(_currentEndY, this.getWidth()), true);
-	        objects = new ArrayList<AWhiteboardObject>();
 	        //TODO ERIC -- sorry!!
 	        switch(this._shape) {
 	        	case -1:
@@ -347,10 +352,9 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        		this.objects.add(new Circle(startvec, endvec));
 	        		break;
 	        	case 6://TODO: preformatted text e.t.c.
-	        		System.out.println(_userText);
-	        		_userText = showTextArea(_currentStartX, _currentStartY);
+	        		showTextArea(_currentEndX, _currentEndY);
 	        		//commented out for debugging, throwing null errors
-	        		//this.objects.add(new TextBox(startvec,endvec));
+	        		this.objects.add(new TextBox(startvec,endvec));
 	        		break;
 	        	case 7:
 	        		((FreeLine) this.obj).add(endvec);
@@ -386,19 +390,13 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     
  
     //====================================================================showTextArea
-    private String showTextArea(int _currentStartX2, int _currentStartY2) 
+    private void showTextArea(int _currentEndX2, int _currentEndY2) 
     {
 		// TODO: (Eric) Pre-formatted persistent text area
-    	
-    	JPopupMenu popup = new JPopupMenu();
-        popup.setLayout(new BorderLayout());
-        popup.add(new JPanel());
-        popup.setPopupSize(200, 20);
-        txtInput = new JTextField();
-        popup.add(txtInput);
-        popup.show(this, _currentStartX2, _currentStartY2);
-        repaint();
-        return txtInput.getText();
+    	textDialog = new TextDialog(parentFrame, _currentEndX2, _currentEndY2);
+		//textDialog.setLocation(_currentStartX, _currentStartY);
+		//textDialog.setVisible(true);
+        //return txtInput.getText();
     
     }	
 		
@@ -468,6 +466,27 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	public void setMode(boolean mode) {
 		// TODO Auto-generated method stub
 		this._filledMode = mode;
+	}
+
+
+
+	public void setChangesMade(boolean changes) {
+		// TODO Auto-generated method stub
+		this._changesMade = changes;
+	}
+
+
+
+	public void setBufImage(BufferedImage bufImage) {
+		// TODO Auto-generated method stub
+		this._bufImage = bufImage;
+	}
+
+
+
+	public void setTextDialog(JFrame parentFrame) {
+		// TODO Auto-generated method stub
+		this.parentFrame = parentFrame;
 	}
 	
 	

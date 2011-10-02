@@ -432,7 +432,9 @@ public class Whiteboard extends JFrame implements ActionListener{
 			 	canvas.setPen(pen);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Text"))
-			 {	canvas.setShape(6);
+			 {	
+			 	canvas.setTextDialog(this);
+			 	canvas.setShape(6);
 				pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 				canvas.setPen(pen);
 			 }
