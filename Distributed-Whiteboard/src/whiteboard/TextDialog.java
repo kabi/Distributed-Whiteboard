@@ -34,7 +34,7 @@ public class TextDialog extends JDialog implements ActionListener{
 	double pixels;
     
     JButton btnOK;
-    JPanel northPanel, southPanel1, southPanel;
+    JPanel northPanel, spacerPanel, southPanel;
     JFrame parent;
     JButton btnFont;
  // create a font chooser
@@ -51,12 +51,12 @@ public class TextDialog extends JDialog implements ActionListener{
 	    northPanel = new JPanel();
 	    northPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 	    
-	    southPanel1 = new JPanel();
-	    southPanel1.setLayout(new GridLayout(1, 2));
+	    spacerPanel = new JPanel();
+	    spacerPanel.setLayout(new GridLayout(1, 2));
 	    southPanel = new JPanel();
 	    southPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 	    
-	    String fontText = "<html><font face=\"Bodoni MT\"><b><i>font..</b><i></font>";
+	    String fontText = "<html><font face=\"Bodoni MT\"><b><i>f..</b><i></font>";
 
         text = "  ";
 	    
@@ -64,7 +64,7 @@ public class TextDialog extends JDialog implements ActionListener{
 	    lblText.setHorizontalAlignment(SwingConstants.LEFT);
 	    
 	    txtText = new JTextField(text);
-	    txtText.setPreferredSize(new Dimension(340, 40));
+	    txtText.setPreferredSize(new Dimension(340, 50));
 	    txtText.setBorder(BorderFactory.createLoweredBevelBorder());
 	    txtText.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
@@ -77,9 +77,9 @@ public class TextDialog extends JDialog implements ActionListener{
 			}});
 	    
 	    btnFont = new JButton(fontText);
-	    btnFont.setPreferredSize(new Dimension(30, 20));
+	    btnFont.setPreferredSize(new Dimension(45, 20));
 	    btnFont.addActionListener(this);
-	    btnFont.setToolTipText("Change the title font");
+	    btnFont.setToolTipText("Select the text font");
 	    
 	    northPanel.add(lblText, FlowLayout.LEFT);
 	    northPanel.add(txtText, FlowLayout.CENTER);
@@ -91,13 +91,13 @@ public class TextDialog extends JDialog implements ActionListener{
 	    
 	    southPanel.add(btnOK);
 	
-	    this.getContentPane().setLayout(new GridLayout(4,1));
+	    this.getContentPane().setLayout(new GridLayout(3,1));
 	    this.getContentPane().add(northPanel);
-	    this.getContentPane().add(southPanel1);
+	    this.getContentPane().add(spacerPanel);
 	    this.getContentPane().add(southPanel, BorderLayout.SOUTH);
 	
-    
-	    this.setSize(430, 180);
+	    this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	    this.setSize(450, 200);
 	    this.setLocationRelativeTo(null);
 	    this.setLocation(_currentStartX2, _currentStartY2);
 	    this.setResizable(false);
@@ -121,8 +121,9 @@ public class TextDialog extends JDialog implements ActionListener{
         		//ex.printStackTrace();
         	}
         	
-            this.setVisible(false);
-            //System.out.println("Width: " + pageWidth + "Height: " + pageHeight);
+        	this.dispose();
+            
+            
     	}else if(e.getSource() == btnFont)
     	{
     		// show a dialog that contains JFontChooser component

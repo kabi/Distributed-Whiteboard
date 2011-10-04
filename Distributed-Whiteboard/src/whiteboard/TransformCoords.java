@@ -20,5 +20,4 @@ public class TransformCoords {
     	return 1 - y * (1 - 0) / height;   
     }
 
-
 }

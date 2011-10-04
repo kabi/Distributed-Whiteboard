@@ -62,8 +62,8 @@ public class TextBox extends ABoxed implements Serializable {
 		this.contents = substr1 + substr2;
 	}
 	
-	public void setFont(String name, int style, int size) {
-		this.font = new Font(name,style,size);
+	public void setFont(Font font) {
+		this.font = font;
 	}
 	
 	/**

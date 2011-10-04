@@ -64,6 +64,10 @@ import javax.swing.text.Position;
  **/
 public class JFontChooser extends JComponent
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5732105631411209871L;
 	// class variables
 	/**
 	 * Return value from <code>showDialog()</code>.

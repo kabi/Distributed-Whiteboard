@@ -44,6 +44,8 @@ import javax.swing.border.BevelBorder;
 
 import whiteboard.object.style.Pen;
 import whiteboard.object.style.StyleBox;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 
 //Pre-formatted UI with WindowBuilderPro for Eclipse
@@ -79,6 +81,8 @@ public class Whiteboard extends JFrame implements ActionListener{
 	private Pen pen = new Pen();
 	private StyleBox styleBox = new StyleBox();
 	private FileMenu fileMenu = new FileMenu(canvas);
+	private JLabel lblTool;
+	private ImageIcon btnIcon;
 	public static JTextField txtInput;
 	public static boolean changesMade = false;
 
@@ -86,7 +90,7 @@ public class Whiteboard extends JFrame implements ActionListener{
 		setTitle("Distributed Whiteboard");
 		setResizable(false);
     
-		ImageIcon btnIcon = new ImageIcon();
+		btnIcon = new ImageIcon();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(802, 607);
         
@@ -321,9 +325,9 @@ public class Whiteboard extends JFrame implements ActionListener{
         pnlColorChooser = new JPanel();
         getContentPane().add(pnlColorChooser, BorderLayout.SOUTH);
         GridBagLayout gbl_pnlColorChooser = new GridBagLayout();
-        gbl_pnlColorChooser.columnWidths = new int[]{0, 0, 0};
+        gbl_pnlColorChooser.columnWidths = new int[]{0, 62, 0, 36, 0};
         gbl_pnlColorChooser.rowHeights = new int[]{0, 0, 0};
-        gbl_pnlColorChooser.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        gbl_pnlColorChooser.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         gbl_pnlColorChooser.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         pnlColorChooser.setLayout(gbl_pnlColorChooser);
         
@@ -348,6 +352,22 @@ public class Whiteboard extends JFrame implements ActionListener{
         gbc_lblColor.gridx = 0;
         gbc_lblColor.gridy = 1;
         pnlColorChooser.add(lblColor, gbc_lblColor);
+        
+        JLabel lblSelectedTool = new JLabel("Selected Tool:");
+        lblSelectedTool.setFont(new Font("Tahoma", Font.ITALIC, 10));
+        GridBagConstraints gbc_lblSelectedTool = new GridBagConstraints();
+        gbc_lblSelectedTool.insets = new Insets(0, 0, 0, 5);
+        gbc_lblSelectedTool.gridx = 2;
+        gbc_lblSelectedTool.gridy = 1;
+        pnlColorChooser.add(lblSelectedTool, gbc_lblSelectedTool);
+        
+        lblTool = new JLabel("");
+        lblTool.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTool.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+        GridBagConstraints gbc_lblTool = new GridBagConstraints();
+        gbc_lblTool.gridx = 3;
+        gbc_lblTool.gridy = 1;
+        pnlColorChooser.add(lblTool, gbc_lblTool);
         pnlColorChooser.setVisible(true);
         
         JMenuBar menuMainMenu = new JMenuBar();
@@ -405,31 +425,43 @@ public class Whiteboard extends JFrame implements ActionListener{
 			 {	canvas.setShape(0);
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/free_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Line"))
 			 {	canvas.setShape(1);	 
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/line_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Rectangle"))
 			 {	canvas.setShape(2);
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/rectangle_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Square"))
 			 {	canvas.setShape(3);
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/square_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Oval"))
 			 {	canvas.setShape(4);
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/ellipse_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Circle"))
 			 {	canvas.setShape(5);	
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/circle_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Text"))
 			 {	
@@ -437,11 +469,15 @@ public class Whiteboard extends JFrame implements ActionListener{
 			 	canvas.setShape(6);
 				pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 				canvas.setPen(pen);
+				btnIcon = new ImageIcon("images/text_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 			 }
 		 else if(e.getActionCommand().equalsIgnoreCase("Erase"))
 		 	{	canvas.setShape(7);
 			 	pen.setPen(pen.getPen().getLineWidth(), BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);	
 			 	canvas.setPen(pen);
+			 	btnIcon = new ImageIcon("images/erase_a.jpg");
+			 	lblTool.setIcon(btnIcon);
 		 	}
 		else if(e.getActionCommand().equalsIgnoreCase("Fill"))
 		 	{	JToggleButton btn = (JToggleButton)e.getSource();
@@ -487,10 +523,6 @@ public class Whiteboard extends JFrame implements ActionListener{
 		 
 
 	}
-	
-	
-	
-	
 }
 	
 	

@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -35,6 +36,7 @@ import whiteboard.object.Rectangle;
 import whiteboard.object.Square;
 import whiteboard.object.TextBox;
 import whiteboard.object.Vector;
+import whiteboard.object.ZeroSizeObjectException;
 import whiteboard.object.style.Pen;
 
 class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener {
@@ -132,6 +134,9 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         Graphics2D g2 = (Graphics2D)g;  // downcast to Graphics2D
         if (_bufImage == null) {
             //--- This is the first time, initialize _bufImage
+        	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+        	
             int w = this.getWidth();
             int h = this.getHeight();
             _bufImage = (BufferedImage)this.createImage(w, h);
@@ -153,102 +158,133 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         //    on the context passed to paintComponent, or the
         //    context for the BufferedImage.
     	
-    	g2.setColor(_pen.get_penColor());
-        g2.setStroke(_pen.getPen());
-        checkZeroSizeObject();
-        switch (_shape) {
-        
-            case NONE  :
-                     break;
-             
-            case FREELINE:
-            	for (int i = 0; i < points.size() - 2; i++)
-                {
-                    Point p1 = points.get(i);
-                    Point p2 = points.get(i + 1);
-
-                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-                }
-            	_changesMade = true; //flag changes made to canvas
-                     break;  
-            case LINE: 
-                g2.drawLine(_currentStartX, _currentStartY, //no check needed as line is a 1 dimensional object
-                            _currentEndX , _currentEndY);
-                break;  
-            case RECTANGLE:
-            	if(_filledMode) 
-            		g2.fillRect(_posX, _posY,
-                            _posWidth, 
-                            _posHeight);
-            	else
-                    g2.drawRect(_posX, _posY,
-                            _posWidth, 
-                            _posHeight);
-            	_changesMade = true; //flag changes made to canvas
-                break;  
-            case SQUARE:
-            	if(_filledMode)
-            		g2.fillRect(_posX, _posY,
-                            _posHeight, 
-                            _posHeight);
-            	else
-            		g2.drawRect(_posX, _posY,
-                            _posHeight, 
-                            _posHeight);
-            	_changesMade = true; //flag changes made to canvas
-                break;  
-            case ELIPSE:
-            	if(_filledMode)
-            		g2.fillOval(_posX, _posY,
-                            _posWidth, 
-                            _posHeight);
-            	else
-            		g2.drawOval(_posX, _posY,
-                            _posWidth, 
-                            _posHeight);
-            	_changesMade = true; //flag changes made to canvas
-                break;     
-            case CIRCLE:
-            	if(_filledMode)
-            		g2.fillOval(_posX, _posY,
-                            _posHeight, 
-                            _posHeight);
-            	else
-                     g2.drawOval(_posX, _posY,
-                             _posHeight, 
-                             _posHeight);
-            		_changesMade = true; //flag changes made to canvas
-                     break;
-                     
-            case TEXTBOX:
-            	try
-            	{
-            		g2.setFont(textDialog.getSelectedFont());
-                    g2.drawString(textDialog.text, _currentStartX, _currentStartY);
-                    textDialog.setText("");
-                   
-                    _changesMade = true; //flag changes made to canvas
-            	}
-            	catch(Exception e)
-            	{
-            		//e.printStackTrace();
-            	}
-                break;
-            case ERASE:
-            	for (int i = 0; i < points.size() - 2; i++)
-                {
-                    Point p1 = points.get(i);
-                    Point p2 = points.get(i + 1);
-                    g2.setColor(this.getBackground());
-                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-                }
-            		g2.setColor(_pen.get_penColor());
-            		_changesMade = true; //flag changes made to canvas
-                     break;   
-            default:  // should never happen
-                     g2.drawString("Error!", 10, 20);
-                     _changesMade = true; //flag changes made to canvas
-                     break;
+    	//TODO: ERIC; Rewrite this method after the Style and Vector classes are finished (fonts, fills, width, height etc.)
+    	
+    	//TODO: ERIC ; Loop through ArrayList of whiteboard objects
+    	//remove switch once Vector and Style class is done
+    	//for (int i = 0; i < objects.size(); i++)
+		//{
+	    	g2.setColor(_pen.get_penColor());
+	        g2.setStroke(_pen.getPen());
+	        checkZeroSizeObject();
+	        
+	        switch (_shape) {
+	        
+	            case NONE  :
+	                     break;
+	             
+	            case FREELINE:
+	            	for (int i = 0; i < points.size() - 2; i++)
+	                {
+	                    Point p1 = points.get(i);
+	                    Point p2 = points.get(i + 1);
+	
+	                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+	                }
+	            	_changesMade = true; //flag changes made to canvas
+	                     break;
+	                    
+	            case LINE: 
+	                g2.drawLine(_currentStartX, _currentStartY, //no check needed as line is a 1 dimensional object
+	                            _currentEndX , _currentEndY);
+	                break;  
+	            case RECTANGLE:
+	            	/*	            	
+	            	for (int i = 0; i < objects.size(); i++)
+	    			{
+	    				//System.out.println("Arraysize: " + i + ", Object: " + objects.get(i).toString() + ", Name: " + objects.get(i).getClass().getName());
+	    				if(objects.get(i).getClass().equals(Rectangle.class))
+	    				{
+	    					obj = (Rectangle) objects.get(i);
+							g2.drawRect((int)obj.getPosition().x(), (int)obj.getPosition().y(), 150, 75);
+	    					
+	    				}
+	    			}  
+				*/
+	            	
+	            	if(_filledMode) 
+	            		g2.fillRect(_posX, _posY,
+	                            _posWidth, 
+	                            _posHeight);
+	            	else
+	                    g2.drawRect(_posX, _posY,
+	                            _posWidth, 
+	                            _posHeight);
+	            	_changesMade = true; //flag changes made to canvas
+	                break;  
+	            case SQUARE:
+	            	if(_filledMode)
+	            		g2.fillRect(_posX, _posY,
+	                            _posHeight, 
+	                            _posHeight);
+	            	else
+	            		g2.drawRect(_posX, _posY,
+	                            _posHeight, 
+	                            _posHeight);
+	            	_changesMade = true; //flag changes made to canvas
+	                break;  
+	            case ELIPSE:
+	            	if(_filledMode)
+	            		g2.fillOval(_posX, _posY,
+	                            _posWidth, 
+	                            _posHeight);
+	            	else
+	            		g2.drawOval(_posX, _posY,
+	                            _posWidth, 
+	                            _posHeight);
+	            	_changesMade = true; //flag changes made to canvas
+	                break;     
+	            case CIRCLE:
+	            	if(_filledMode)
+	            		g2.fillOval(_posX, _posY,
+	                            _posHeight, 
+	                            _posHeight);
+	            	else
+	                     g2.drawOval(_posX, _posY,
+	                             _posHeight, 
+	                             _posHeight);
+	            		_changesMade = true; //flag changes made to canvas
+	                     break;
+	            case TEXTBOX:
+	            	/*for (int i = 0; i < objects.size(); i++)
+	    			{
+	    				if(objects.get(i).getClass().equals(TextBox.class))
+	    				{
+	    					obj = ((TextBox) objects.get(i));
+	    					g2.setFont(((TextBox)obj).getFont());
+							g2.drawString(((TextBox)obj).getContents(), (int)obj.getPosition().x(), (int)obj.getPosition().y());
+							_changesMade = true; //flag changes made to canvas
+	    				}
+	    			}  */
+	            	
+	            	try
+	            	{
+	            		g2.setFont(textDialog.getSelectedFont());
+	            		g2.drawString(textDialog.getText(), _currentStartX, _currentStartY);
+	            		textDialog.setText("");
+						_changesMade = true; //flag changes made to canvas
+	            	}
+					catch(NullPointerException e)
+					{
+						//e.printStackTrace();
+					}
+	                break;
+	            case ERASE:
+	            	for (int i = 0; i < points.size() - 2; i++)
+	                {
+	                    Point p1 = points.get(i);
+	                    Point p2 = points.get(i + 1);
+	                    g2.setColor(this.getBackground());
+	                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+	                }
+	            		g2.setColor(_pen.get_penColor());
+	            		_changesMade = true; //flag changes made to canvas
+	                     break;   
+	            default:  // should never happen
+	                     g2.drawString("Error!", _posX, _posY);
+	                     _changesMade = true; //flag changes made to canvas
+	                     break;
+	        //}
                      
         }
         repaint();
@@ -274,7 +310,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         	// can just use the mouse coordinates to spawn vectors
         	
         	
-        	//TODO: (Eric) Transfer conversion helper functions to new class
+        	//TODO: (Eric) Remove conversion class once vectors modified
         	
         	points.add(new Point(_currentStartX, _currentStartY));
         	
@@ -296,8 +332,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     	//If freedrawing, then update the object after each MouseEvent
     	if(this._shape == 0 || this._shape==7) {
     		
-    		Vector vec = new Vector(TransformCoords.userX(_currentEndX, this.getWidth()), 
-    				TransformCoords.userY(_currentEndY, this.getHeight()), true);
+    		//Vector vec = new Vector(_currentEndX, _currentEndY, true);
     		//TODO ERIC -- again make these doubles correctly scaled and oriented!!
     		//((FreeLine) this.obj).add(vec);
     		System.out.println(TransformCoords.userX(_currentEndX, this.getWidth()) +  ": " + TransformCoords.userY(_currentEndY, this.getHeight()));
@@ -322,10 +357,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
         try
         {
 	        //Save the current object.
-	        Vector startvec = new Vector(TransformCoords.userX(_currentStartX, this.getWidth()), 
-	        		TransformCoords.userY(_currentStartY, this.getWidth()), true);
-	        Vector endvec = new Vector(TransformCoords.userX(_currentEndX, this.getWidth()), 
-	        		TransformCoords.userY(_currentEndY, this.getWidth()), true);
+	        Vector startvec = new Vector(_currentStartX, _currentStartY,  true);
+	        Vector endvec = new Vector(_currentEndX, _currentEndY, true);
 	        //TODO ERIC -- sorry!!
 	        switch(this._shape) {
 	        	case -1:
@@ -351,10 +384,15 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        	case 5:
 	        		this.objects.add(new Circle(startvec, endvec));
 	        		break;
-	        	case 6://TODO: preformatted text e.t.c.
+	        	case 6:
 	        		showTextArea(_currentEndX, _currentEndY);
 	        		//commented out for debugging, throwing null errors
-	        		this.objects.add(new TextBox(startvec,endvec));
+	        		obj = new TextBox(startvec, endvec);
+	        		((TextBox)obj).setContents(textDialog.text);
+	        		((TextBox)obj).setFont(textDialog.getSelectedFont());
+	        		//TODO: uncomment next line
+	        		//textDialog.setText("");
+	        		this.objects.add(obj);
 	        		break;
 	        	case 7:
 	        		((FreeLine) this.obj).add(endvec);
@@ -392,11 +430,8 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     //====================================================================showTextArea
     private void showTextArea(int _currentEndX2, int _currentEndY2) 
     {
-		// TODO: (Eric) Pre-formatted persistent text area
+		
     	textDialog = new TextDialog(parentFrame, _currentEndX2, _currentEndY2);
-		//textDialog.setLocation(_currentStartX, _currentStartY);
-		//textDialog.setVisible(true);
-        //return txtInput.getText();
     
     }	
 		
@@ -457,38 +492,31 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 
 
 	public void setPen(Pen pen) {
-		// TODO Auto-generated method stub
 		this._pen = pen;
 	}
 
 
 
 	public void setMode(boolean mode) {
-		// TODO Auto-generated method stub
 		this._filledMode = mode;
 	}
 
 
 
 	public void setChangesMade(boolean changes) {
-		// TODO Auto-generated method stub
 		this._changesMade = changes;
 	}
 
 
 
 	public void setBufImage(BufferedImage bufImage) {
-		// TODO Auto-generated method stub
 		this._bufImage = bufImage;
 	}
 
 
 
 	public void setTextDialog(JFrame parentFrame) {
-		// TODO Auto-generated method stub
 		this.parentFrame = parentFrame;
 	}
-	
-	
 	
 }
