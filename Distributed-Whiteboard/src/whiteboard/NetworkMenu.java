@@ -129,7 +129,6 @@ public class NetworkMenu {
 			UnicastRemoteObject.unexportObject(parent, true);
 			parent.mntmConnect.setEnabled(true);
         	parent.mntmDisconnect.setEnabled(false);
-        	parent.setManager(false);
         	parent.setTitle("Distributed Whiteboard");
 		}
 		catch(NullPointerException e)

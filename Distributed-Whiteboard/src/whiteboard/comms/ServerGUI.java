@@ -177,7 +177,7 @@ public class ServerGUI{
 		pnlSouth.add(btnStop);
 		
 				btnLaunch = new JButton("Set Manager");
-				btnLaunch.setToolTipText("Start the manager client application");
+				btnLaunch.setToolTipText("Select the session manager");
 				btnLaunch.addActionListener(new ActionListener() { //add an event handler for the close button
 					public void actionPerformed(ActionEvent e) { 
 						

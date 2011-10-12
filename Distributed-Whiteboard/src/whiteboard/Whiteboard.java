@@ -605,10 +605,12 @@ public class Whiteboard extends JFrame implements ActionListener, WhiteboardInte
 		{
 			JOptionPane.showMessageDialog(this, "Server is shutting down....", "Server Message", JOptionPane.INFORMATION_MESSAGE);
 			networkMenu.disconnect(" left the session.");
+			setManager(true);
 		}else if(serverMessage.equalsIgnoreCase("Ejected"))
 		{
 			JOptionPane.showMessageDialog(this, "You have been ejected from the session.", "Server Message", JOptionPane.INFORMATION_MESSAGE);
 			networkMenu.disconnect(" has been ejected.");
+			setManager(true);
 		}else if(serverMessage.equalsIgnoreCase("IsManager"))
 		{
 			JOptionPane.showMessageDialog(this, "You are the session manager.", "Server Message", JOptionPane.INFORMATION_MESSAGE);
