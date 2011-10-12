@@ -1,18 +1,19 @@
 package whiteboard;
 
-import javax.swing.JFrame;
 
-public class Main {
+public class Main{
 	
+	private static Whiteboard parentFrame;
+
+
 	//===============================================Create the GUI and display for user
 	private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new Whiteboard();
-        frame.setTitle("Distributed Whiteboard");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        parentFrame = new Whiteboard();
+        parentFrame.setTitle("Distributed Whiteboard");
 
         //Display the window.
-        frame.setVisible(true);
+        parentFrame.setVisible(true);
     }//end createAndShowGUI
 
     
@@ -27,5 +28,6 @@ public class Main {
             }
         });
     }//end main
+
 
 }

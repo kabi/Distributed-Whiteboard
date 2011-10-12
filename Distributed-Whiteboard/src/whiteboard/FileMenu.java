@@ -20,7 +20,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  *
  */
 public class FileMenu {
-//TODO PUT SHIT IN HERE
 
 	DrawingCanvas canvas;
 	private String fileName = new String();
@@ -29,7 +28,6 @@ public class FileMenu {
 	
 	
 	public FileMenu(DrawingCanvas canvas) {
-		// TODO Auto-generated constructor stub
 		this.canvas = canvas;
 		fileChooser .resetChoosableFileFilters();
         fileChooser.setAcceptAllFileFilterUsed(false);
@@ -43,7 +41,6 @@ public class FileMenu {
 		//=============================================================open
 		public void open()
 		{
-			//TODO: Scale the opened images to fit on canvas
 			//---Provided to enable users to open image files
 			
 			
@@ -230,6 +227,7 @@ public class FileMenu {
 			public void exit() {
 				//---Provided so users can exit the application. 
 				//Checks for any pending changes to be saved
+				if(Whiteboard.manager)
 				if(canvas._changesMade)
 				{
 					int confirm = JOptionPane.showConfirmDialog(canvas, "Save changes to file?", "Save Changes", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -239,7 +237,8 @@ public class FileMenu {
 						save();
 						if(canvas._changesMade);
 						else
-						{System.exit(0);
+						{
+							System.exit(0);
 						}
 					}
 					else System.exit(0);
@@ -250,7 +249,6 @@ public class FileMenu {
 			}//end exit()
 
 			public void setCanvas(DrawingCanvas canvas) {
-				// TODO Auto-generated method stub
 				this.canvas = canvas;
 			}
 }

@@ -62,6 +62,7 @@ import javax.swing.text.Position;
  *   }
  * <pre>
  **/
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JFontChooser extends JComponent
 {
 	/**
@@ -212,6 +213,7 @@ public class JFontChooser extends JComponent
 		}
 		return fontSizeTextField;
 	}
+
 
 	public JList getFontFamilyList()
 	{
@@ -603,6 +605,10 @@ public class JFontChooser extends JComponent
 
 	protected class DialogOKAction extends AbstractAction
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3093975076540548010L;
 		protected static final String ACTION_NAME = "OK";
 		private JDialog dialog;
 
@@ -623,6 +629,10 @@ public class JFontChooser extends JComponent
 
 	protected class DialogCancelAction extends AbstractAction
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3495420145022273116L;
 		protected static final String ACTION_NAME = "Cancel";
 		private JDialog dialog;
 

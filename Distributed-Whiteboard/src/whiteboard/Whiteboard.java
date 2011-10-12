@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,6 +23,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -34,22 +39,23 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
+import whiteboard.comms.WhiteboardInterface;
+import whiteboard.object.AWhiteboardObject;
 import whiteboard.object.style.Pen;
 import whiteboard.object.style.StyleBox;
-import java.awt.Font;
-import javax.swing.SwingConstants;
 
 
 //Pre-formatted UI with WindowBuilderPro for Eclipse
-public class Whiteboard extends JFrame implements ActionListener{
+public class Whiteboard extends JFrame implements ActionListener, WhiteboardInterface{
 
     /**TODO: Pre-formatted text
      * TODO: 
@@ -81,10 +87,19 @@ public class Whiteboard extends JFrame implements ActionListener{
 	private Pen pen = new Pen();
 	private StyleBox styleBox = new StyleBox();
 	private FileMenu fileMenu = new FileMenu(canvas);
+	NetworkMenu networkMenu = new NetworkMenu(canvas);
 	private JLabel lblTool;
 	private ImageIcon btnIcon;
+	JMenuItem mntmConnect;
+	JMenuItem mntmDisconnect;
+	private JMenuItem mntmNew;
+	private JMenuItem mntmOpen;
+	private JMenuItem mntmSave;
+	private JMenuItem mntmSaveAs;
+	private JMenuItem mntmExit;
 	public static JTextField txtInput;
 	public static boolean changesMade = false;
+	static boolean manager = true;
 
 	public Whiteboard(){
 		setTitle("Distributed Whiteboard");
@@ -104,18 +119,12 @@ public class Whiteboard extends JFrame implements ActionListener{
         drawingCanvas.setForeground(_bgColor);
         splitPane.setRightComponent(drawingCanvas);
         
-        JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setAutoscrolls(true);
         canvas = new DrawingCanvas();
         canvas.setAutoscrolls(true);
         canvas.setBounds(0, 0, 679, 494);
-        canvas.add(scrollPane1);
-        drawingCanvas.add(canvas);
+
         
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(0, 0, 2, 2);
-        scrollPane.setAutoscrolls(true);
-        drawingCanvas.add(scrollPane);
+		drawingCanvas.add(canvas);
         
         
         JPanel pnlTools = new JPanel();
@@ -378,13 +387,13 @@ public class Whiteboard extends JFrame implements ActionListener{
         mnFile.setActionCommand("File");
         menuMainMenu.add(mnFile);
         
-        JMenuItem mntmNew = new JMenuItem("New");
+        mntmNew = new JMenuItem("New");
         mntmNew.setMnemonic(KeyEvent.VK_N);
         mntmNew.setActionCommand("New");
         mntmNew.addActionListener(this);
         mnFile.add(mntmNew);
         
-        JMenuItem mntmOpen = new JMenuItem("Open");
+        mntmOpen = new JMenuItem("Open");
         mntmOpen.setMnemonic(KeyEvent.VK_O);
         mntmOpen.setActionCommand("Open");
         mntmOpen.addActionListener(this);
@@ -393,13 +402,13 @@ public class Whiteboard extends JFrame implements ActionListener{
         JSeparator separator = new JSeparator();
         mnFile.add(separator);
         
-        JMenuItem mntmSave = new JMenuItem("Save");
+        mntmSave = new JMenuItem("Save");
         mntmSave.setMnemonic(KeyEvent.VK_S);
         mntmSave.setActionCommand("Save");
         mntmSave.addActionListener(this);
         mnFile.add(mntmSave);
         
-        JMenuItem mntmSaveAs = new JMenuItem("Save As");
+        mntmSaveAs = new JMenuItem("Save As");
         mntmSaveAs.setActionCommand("SaveAs");
         mntmSaveAs.addActionListener(this);
         mnFile.add(mntmSaveAs);
@@ -407,11 +416,37 @@ public class Whiteboard extends JFrame implements ActionListener{
         JSeparator separator_1 = new JSeparator();
         mnFile.add(separator_1);
         
-        JMenuItem mntmExit = new JMenuItem("Exit");
+        mntmExit = new JMenuItem("Exit");
         mntmExit.setMnemonic(KeyEvent.VK_E);
         mntmExit.setActionCommand("Exit");
         mntmExit.addActionListener(this);
         mnFile.add(mntmExit);
+        
+        JMenu mnNetwork = new JMenu("Network");
+        mnNetwork.setActionCommand("Network");
+        menuMainMenu.add(mnNetwork);
+        
+        mntmConnect = new JMenuItem("Connect");
+        mntmConnect.setMnemonic(KeyEvent.VK_C);
+        mntmConnect.setActionCommand("Connect");
+        mntmConnect.addActionListener(this);
+        mnNetwork.add(mntmConnect);
+        
+        mntmDisconnect = new JMenuItem("Disconnect");
+        mntmDisconnect.setMnemonic(KeyEvent.VK_D);
+        mntmDisconnect.setActionCommand("Disconnect");
+        mntmDisconnect.addActionListener(this);
+        mntmDisconnect.setEnabled(false);
+        mnNetwork.add(mntmDisconnect);
+        
+        JSeparator separator_3 = new JSeparator();
+        mnNetwork.add(separator_3);
+        
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+            	closeOperation();
+            }
+          });
     } 
     
 	
@@ -515,14 +550,92 @@ public class Whiteboard extends JFrame implements ActionListener{
 		 	}
 		 else if(e.getActionCommand().equalsIgnoreCase("Exit"))
 		 	{
-			 	fileMenu.setCanvas(canvas); 
-			 	fileMenu.exit();
+			 	closeOperation();	
+		 	}
+		 else if(e.getActionCommand().equalsIgnoreCase("Connect"))
+		 	{
+			 	networkMenu.setCanvas(this, canvas); 
+			 	networkMenu.connect(this);
+		 	}
+		 else if(e.getActionCommand().equalsIgnoreCase("Disconnect"))
+		 	{
+			 	networkMenu.setCanvas(this, canvas); 
+			 	networkMenu.disconnect(" left the session.");
 		 	}
 		 revalidate();	 
 		 repaint();
 		 
 
 	}
+
+
+	public void closeOperation()
+	{
+		fileMenu.setCanvas(canvas); 
+		networkMenu.setCanvas(this, canvas); 
+	 	networkMenu.disconnect(" left the session.");
+		System.out.print("Closing.......");
+	 	fileMenu.exit();
+	}
+
+
+	@Override
+	public void setShapeList(ArrayList<AWhiteboardObject> globalShapeList)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void appendChartItem(AWhiteboardObject item) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+	@Override
+	public void setServerMessage(String serverMessage) throws RemoteException {
+		// TODO check server message for action
+		//System.out.println(serverMessage);
+		if(serverMessage.equalsIgnoreCase("ServerShutdown"))
+		{
+			JOptionPane.showMessageDialog(this, "Server is shutting down....", "Server Message", JOptionPane.INFORMATION_MESSAGE);
+			networkMenu.disconnect(" left the session.");
+		}else if(serverMessage.equalsIgnoreCase("Ejected"))
+		{
+			JOptionPane.showMessageDialog(this, "You have been ejected from the session.", "Server Message", JOptionPane.INFORMATION_MESSAGE);
+			networkMenu.disconnect(" has been ejected.");
+		}else if(serverMessage.equalsIgnoreCase("IsManager"))
+		{
+			JOptionPane.showMessageDialog(this, "You are the session manager.", "Server Message", JOptionPane.INFORMATION_MESSAGE);
+			setManager(true);
+			
+		}else if(serverMessage.equalsIgnoreCase("ChangedManager"))
+		{
+			JOptionPane.showMessageDialog(this, "Session manager changed.", "Server Message", JOptionPane.INFORMATION_MESSAGE);
+			setManager(false);
+			
+		}
+		
+	}
+
+
+
+	public void setManager(boolean isManager)
+	{
+		manager = isManager;
+		mntmNew.setEnabled(isManager);
+		mntmOpen.setEnabled(isManager);
+		mntmSave.setEnabled(isManager);
+		mntmSaveAs.setEnabled(isManager);
+		
+	}
+
+	
 }
 	
 	

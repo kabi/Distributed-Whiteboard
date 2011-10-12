@@ -36,7 +36,6 @@ import whiteboard.object.Rectangle;
 import whiteboard.object.Square;
 import whiteboard.object.TextBox;
 import whiteboard.object.Vector;
-import whiteboard.object.ZeroSizeObjectException;
 import whiteboard.object.style.Pen;
 
 class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener {
@@ -78,7 +77,7 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
     
     //A list of objects currently on the canvas.
     //TODO SET!!
-    private ArrayList<AWhiteboardObject> objects;
+    ArrayList<AWhiteboardObject> objects;
     //A temporary object for manipulation until the object is saved
     //to the list.
     private AWhiteboardObject obj;
@@ -201,16 +200,24 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	    				}
 	    			}  
 				*/
-	            	
-	            	if(_filledMode) 
-	            		g2.fillRect(_posX, _posY,
-	                            _posWidth, 
-	                            _posHeight);
-	            	else
-	                    g2.drawRect(_posX, _posY,
-	                            _posWidth, 
-	                            _posHeight);
-	            	_changesMade = true; //flag changes made to canvas
+	            	try
+	            	{
+		            	g2.drawRect((int)((Rectangle)obj).getPosition().x(), (int)((Rectangle)obj).getPosition().y(), 150, 75);
+		            	/*if(_filledMode) 
+		            		g2.fillRect(_posX, _posY,
+		                            _posWidth, 
+		                            _posHeight);
+		            	else
+		                    g2.drawRect(_posX, _posY,
+		                            _posWidth, 
+		                            _posHeight);*/
+		            	this.obj = null;
+		            	_changesMade = true; //flag changes made to canvas
+			        }
+					catch(NullPointerException e)
+					{
+						//e.printStackTrace();
+					}
 	                break;  
 	            case SQUARE:
 	            	if(_filledMode)
@@ -259,9 +266,11 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	            	
 	            	try
 	            	{
-	            		g2.setFont(textDialog.getSelectedFont());
-	            		g2.drawString(textDialog.getText(), _currentStartX, _currentStartY);
-	            		textDialog.setText("");
+	            		
+	            		g2.setFont(((TextBox)this.obj).getFont());
+	            		g2.drawString(((TextBox)this.obj).getContents(), (int)((TextBox)this.obj).getPosition().x(), (int)((TextBox)this.obj).getPosition().y());
+	            		//textDialog.setText("");
+	            		this.obj = null;
 						_changesMade = true; //flag changes made to canvas
 	            	}
 					catch(NullPointerException e)
@@ -373,7 +382,9 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        		this.objects.add(new Line(startvec, endvec));
 	        		break;
 	        	case 2:
-	        		this.objects.add(new Rectangle(startvec,endvec));
+	        		this.obj = new Rectangle(startvec,endvec);
+	        		//obj.setStyle(newstyle);
+	        		this.objects.add(this.obj);
 	        		break;
 	        	case 3:
 	        		this.objects.add(new Square(startvec, endvec));
@@ -387,12 +398,13 @@ class DrawingCanvas extends JPanel implements MouseListener, MouseMotionListener
 	        	case 6:
 	        		showTextArea(_currentEndX, _currentEndY);
 	        		//commented out for debugging, throwing null errors
-	        		obj = new TextBox(startvec, endvec);
-	        		((TextBox)obj).setContents(textDialog.text);
-	        		((TextBox)obj).setFont(textDialog.getSelectedFont());
-	        		//TODO: uncomment next line
-	        		//textDialog.setText("");
-	        		this.objects.add(obj);
+	        		this.obj = new TextBox(startvec, endvec);
+	        		((TextBox)this.obj).setContents(textDialog.text);
+	        		((TextBox)this.obj).setFont(textDialog.getSelectedFont());
+	        		//TODO: ERIC; uncomment next line after styling complete
+	        		//((TextBox)this.obj).setStyle(null);
+	        		textDialog.setText("");
+	        		this.objects.add(this.obj);
 	        		break;
 	        	case 7:
 	        		((FreeLine) this.obj).add(endvec);
